@@ -1,6 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-int main() {
-    printf("Hello, World!\n");
+typedef struct arguments
+{
+    unsigned int files_count;
+    char **files;
+} arguments;
+
+int main(int argc, char *argv[]) {
+
+
+
     return 0;
 }
