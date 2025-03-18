@@ -30,14 +30,14 @@ void parse_arguments(int argc, char **argv, arguments *args)
     args->files_count = index;
 }
 
-void read_file(char *path, char **buffer)
+int read_file(char *path, char **buffer)
 {
     FILE *f = fopen(path, "r");
     if (f == NULL)
     {
         perror("File opening failed");
         *buffer = NULL;
-        return;
+        return(1);
     }
     int tmp_capacity = INITIAL_BUFFER_SIZE;
     int tmp_size = 0;
@@ -47,7 +47,7 @@ void read_file(char *path, char **buffer)
         perror("Malloc failed");
         *buffer = NULL;
         fclose(f);
-        return;
+        return(1);
     }
     size_t bytes_read;
     while ((bytes_read = fread(tmp + tmp_size, 1, tmp_capacity - tmp_size, f)) > 0)
@@ -61,7 +61,7 @@ void read_file(char *path, char **buffer)
                 perror("Realloc failed");
                 *buffer = NULL;
                 fclose(f);
-                return;
+                return(1);
             }
         }
         tmp_size += bytes_read;
@@ -69,15 +69,23 @@ void read_file(char *path, char **buffer)
     tmp[tmp_size] = '\0';
     *buffer = tmp;
     fclose(f);
+    return tmp_size;
 }
 
 int main(int argc, char *argv[])
 {
     arguments args;
     parse_arguments(argc, argv, &args);
-    printf("Files count: %d\n", args.files_count);
     char *buffer = NULL;
-    read_file(args.files[0], &buffer);
-    printf("%s\n", buffer);
+    int buffer_size = 0;
+    for (unsigned int i = 0; i < args.files_count; i++)
+    {
+        char *content = NULL;
+        int len = read_file(args.files[i], &content);
+        buffer = realloc(buffer, (buffer_size + len) * sizeof(char));
+        memcpy(buffer + buffer_size, content, len);
+        buffer_size += len;        
+        printf("%s\n", buffer);
+    }
     return 0;
 }
