@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
         memcpy(buffer + buffer_size, content, len);
         buffer_size += len;        
         printf("%s\n", buffer);
+        free(content);
     }
     return 0;
 }
