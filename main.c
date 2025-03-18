@@ -42,7 +42,8 @@ void read_file(char *path, char **buffer)
     int tmp_capacity = INITIAL_BUFFER_SIZE;
     int tmp_size = 0;
     char *tmp = malloc(tmp_capacity * sizeof(char));
-    if (tmp == NULL) {
+    if (tmp == NULL)
+    {
         perror("Malloc failed");
         *buffer = NULL;
         fclose(f);
@@ -62,7 +63,6 @@ void read_file(char *path, char **buffer)
                 fclose(f);
                 return;
             }
-            
         }
         tmp_size += bytes_read;
     }
